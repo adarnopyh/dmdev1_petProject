@@ -102,7 +102,7 @@ public class ClientDaoImpl implements ClientDao {
     }
 
     @Override
-    public ClientEntity add(ClientEntity entity) {
+    public ClientEntity create(ClientEntity entity) {
         try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CLIENT_SQL)) {
 
