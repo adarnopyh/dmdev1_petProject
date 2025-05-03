@@ -1,10 +1,17 @@
 package now.qty.dao.impl;
 
 import now.qty.dao.ClientDao;
+import now.qty.entity.BankAccountEntity;
 import now.qty.entity.ClientEntity;
+import now.qty.entity.PriceLevelEntity;
 import now.qty.util.ConnectionManager;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +28,7 @@ public class ClientDaoImpl implements ClientDao {
     private static final String CLIENT_REG_NUMBER = "reg_number";
     private static final String CLIENT_VAT_NUMBER = "vat_number";
     private static final String BANK_ACCOUNT_ID = "bank_account_id";
+//    private static final String IBAN = "iban";
     private static final String PRICE_LEVEL_ID = "price_level_id";
 
 
@@ -153,7 +161,7 @@ public class ClientDaoImpl implements ClientDao {
 
     private void setParams(PreparedStatement preparedStatement, ClientEntity client) throws SQLException {
         preparedStatement.setString(1, client.getName());
-        preparedStatement.setBoolean(2, client.isLegal());
+        preparedStatement.setBoolean(2, client.getIsLegal());
         if (client.getIsVatPayer() != null) preparedStatement.setBoolean(3, client.getIsVatPayer());
         else preparedStatement.setNull(3, Types.BOOLEAN);
         if (client.getAddressId() != null) preparedStatement.setInt(4, client.getAddressId());
@@ -161,11 +169,13 @@ public class ClientDaoImpl implements ClientDao {
         preparedStatement.setString(5, client.getRegNumber());
         if (client.getVatNumber() != null) preparedStatement.setString(6, client.getVatNumber());
         else preparedStatement.setNull(6, Types.VARCHAR);
-        if (client.getBankAccountId() != null) preparedStatement.setInt(7, client.getBankAccountId());
+        if (client.getBankAccount() != null) preparedStatement.setInt(7, client.getBankAccount().getId());
         else preparedStatement.setNull(7, Types.INTEGER);
-        if (client.getPriceLevelId() != null) preparedStatement.setInt(8, client.getPriceLevelId());
+        if (client.getPriceLevel() != null) preparedStatement.setInt(8, client.getPriceLevel().getId());
         else preparedStatement.setNull(8, Types.INTEGER);
+
     }
+
 
     private ClientEntity buildClientFromResult(ResultSet resultSet) throws SQLException {
         try {
@@ -178,8 +188,8 @@ public class ClientDaoImpl implements ClientDao {
                     .addressId(resultSet.getObject(ADDRESS_ID) != null ? resultSet.getInt(ADDRESS_ID) : null)
                     .regNumber(resultSet.getString(CLIENT_REG_NUMBER))
                     .vatNumber(resultSet.getObject(CLIENT_VAT_NUMBER) != null ? resultSet.getString(CLIENT_VAT_NUMBER) : null)
-                    .bankAccountId(resultSet.getObject(BANK_ACCOUNT_ID) != null ? resultSet.getInt(BANK_ACCOUNT_ID) : null)
-                    .priceLevelId(resultSet.getInt(PRICE_LEVEL_ID))
+                    .bankAccount(resultSet.wasNull() ? null : BankAccountEntity.builder().id(resultSet.getInt(BANK_ACCOUNT_ID)).build())
+                    .priceLevel(resultSet.wasNull() ? null : PriceLevelEntity.builder().id(resultSet.getInt(PRICE_LEVEL_ID)).build())
                     .build();
         } catch (SQLException e) {
             System.out.println("Can't fetch data from resultSet");

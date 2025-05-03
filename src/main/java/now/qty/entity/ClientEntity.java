@@ -9,15 +9,15 @@ import lombok.*;
 @EqualsAndHashCode
 @Builder
 public class ClientEntity {
-    private int id;
+    private Integer id;
     private String name;
-    private boolean isLegal;
+    private Boolean isLegal;
     private Boolean isVatPayer;
     private Integer addressId;
     private String regNumber;
     private String vatNumber;
-    private Integer bankAccountId;
-    private Integer priceLevelId;
+    private BankAccountEntity bankAccount;
+    private PriceLevelEntity priceLevel;
 
 
     @Override
@@ -30,8 +30,8 @@ public class ClientEntity {
                ", addressId=" + addressId +
                ", regNumber='" + regNumber + '\'' +
                ", vatNumber='" + vatNumber + '\'' +
-               ", bankAccountId=" + bankAccountId +
-               ", priceLevelId=" + priceLevelId +
+               ", bankAccountId=" + bankAccount +
+               ", priceLevelId=" + priceLevel +
                '}' + "\n";
     }
 }

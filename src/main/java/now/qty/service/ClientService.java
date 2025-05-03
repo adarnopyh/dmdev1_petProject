@@ -1,12 +1,14 @@
-//package now.qty.service;
-//
-//import now.qty.dao.ClientDao;
-//
-//public interface ClientService {
-//    ClientDto findById(Integer id);
-//    List<ClientDto> findAll();
-//    ClientDto add(ClientDtop dto);
-//    ClientDto update(ClientDtop updatedto);
-//    void delete(Integer id);
-//
-//}
+package now.qty.service;
+
+import now.qty.dto.ClientDto;
+
+import java.util.List;
+
+public interface ClientService {
+    ClientDto findById(Integer id);
+    List<ClientDto> findAll();
+    ClientDto create(ClientDto dto);
+    ClientDto update(ClientDto updateDto);
+    void delete(Integer id);
+
+}

@@ -3,6 +3,7 @@ package now.qty;
 import now.qty.dao.ClientDao;
 import now.qty.dao.impl.ClientDaoImpl;
 import now.qty.entity.ClientEntity;
+import now.qty.entity.PriceLevelEntity;
 import now.qty.util.ConnectionManager;
 
 import java.sql.Connection;
@@ -21,8 +22,8 @@ public class Runner {
                 .regNumber("11234567899")
                 .vatNumber("LV11234567899")
                 .addressId(null)
-                .bankAccountId(null)
-                .priceLevelId(1)
+                .bankAccount(null)
+                .priceLevel(PriceLevelEntity.builder().id(1).build())
                 .build();
 
 //_______________Add Client Test
