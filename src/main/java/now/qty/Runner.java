@@ -27,7 +27,7 @@ public class Runner {
                 .build();
 
 //_______________Add Client Test
-//                clientDao.add(newClient);
+                clientDao.create(newClient);
 
 //_______________Update Client Test
 //        Optional<ClientEntity> optionalClient = clientDao.findById(11);

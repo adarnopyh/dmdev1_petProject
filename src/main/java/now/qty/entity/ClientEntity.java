@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
+@ToString
 public class ClientEntity {
     private Integer id;
     private String name;
@@ -19,19 +20,4 @@ public class ClientEntity {
     private BankAccountEntity bankAccount;
     private PriceLevelEntity priceLevel;
 
-
-    @Override
-    public String toString() {
-        return "ClientEntity{" +
-               "id=" + id +
-               ", name='" + name + '\'' +
-               ", isLegal=" + isLegal +
-               ", isVatPayer=" + isVatPayer +
-               ", addressId=" + addressId +
-               ", regNumber='" + regNumber + '\'' +
-               ", vatNumber='" + vatNumber + '\'' +
-               ", bankAccountId=" + bankAccount +
-               ", priceLevelId=" + priceLevel +
-               '}' + "\n";
-    }
 }

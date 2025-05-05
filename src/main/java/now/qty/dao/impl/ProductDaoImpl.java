@@ -25,31 +25,31 @@ public class ProductDaoImpl implements ProductDao {
 
     private static final String GET_ALL_PRODUCTS_SQL = """
             SELECT *
-            FROM products
+            FROM product
             """;
 
     private static final String GET_PRODUCT_BY_ID_SQL = """
             SELECT *
-            FROM products
-            WHERE products.id = ?;
+            FROM product
+            WHERE product.id = ?;
             """;
 
     private static final String INSERT_PRODUCT_SQL = """
-            INSERT INTO products
+            INSERT INTO product
             (name, sku)
             VALUES (?, ?)
             RETURNING id;
             """;
 
     private static final String UPDATE_PRODUCT_SQL = """
-            UPDATE products
+            UPDATE product
             SET name=?, sku=?
             WHERE id=?
             """;
 
     private static final String DELETE_PRODUCT_BY_ID_SQL = """
             DELETE
-            FROM products
+            FROM product
             WHERE id = ?
             """;
 

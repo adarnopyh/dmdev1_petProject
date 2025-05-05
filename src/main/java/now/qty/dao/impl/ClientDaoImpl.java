@@ -28,37 +28,46 @@ public class ClientDaoImpl implements ClientDao {
     private static final String CLIENT_REG_NUMBER = "reg_number";
     private static final String CLIENT_VAT_NUMBER = "vat_number";
     private static final String BANK_ACCOUNT_ID = "bank_account_id";
-//    private static final String IBAN = "iban";
+    private static final String BANK_ACCOUNT_IBAN = "iban";
     private static final String PRICE_LEVEL_ID = "price_level_id";
+    private static final String PRICE_LEVEL_CODE = "code";
 
 
     private static final String GET_ALL_CLIENTS_SQL = """
-            SELECT *
-            FROM clients
+            SELECT
+                c.id, c.name, c.is_legal, c.is_vat_payer, c.address_id,
+                c.reg_number, c.vat_number,
+                c.bank_account_id,
+                b.iban AS iban,
+                c.price_level_id,
+                p.code AS code
+            FROM client c
+            LEFT JOIN bank_account b ON c.bank_account_id = b.id
+            LEFT JOIN price_level p ON c.price_level_id = p.id
             """;
 
     private static final String GET_CLIENT_BY_ID_SQL = """
             SELECT *
-            FROM clients
-            WHERE clients.id = ?;
+            FROM client
+            WHERE client.id = ?;
             """;
 
     private static final String INSERT_CLIENT_SQL = """
-            INSERT INTO clients
+            INSERT INTO client
             (name, is_legal, is_vat_payer, address_id, reg_number, vat_number, bank_account_id, price_level_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             RETURNING id;
             """;
 
     private static final String UPDATE_CLIENT_SQL = """
-            UPDATE clients
+            UPDATE client
             SET name=?, is_legal=?, is_vat_payer=?, address_id=?, reg_number=?, vat_number=?, bank_account_id=?, price_level_id=?
             WHERE id=?
             """;
 
     private static final String DELETE_CLIENT_BY_ID_SQL = """
             DELETE
-            FROM clients
+            FROM client
             WHERE id = ?
             """;
 
@@ -179,6 +188,17 @@ public class ClientDaoImpl implements ClientDao {
 
     private ClientEntity buildClientFromResult(ResultSet resultSet) throws SQLException {
         try {
+
+            BankAccountEntity bankAccount = BankAccountEntity.builder()
+                    .id(resultSet.getInt(BANK_ACCOUNT_ID))
+                    .iban(resultSet.getString(BANK_ACCOUNT_IBAN))
+                    .build();
+
+            PriceLevelEntity priceLevel = PriceLevelEntity.builder()
+                    .id(resultSet.getInt(PRICE_LEVEL_ID))
+                    .code(resultSet.getString(PRICE_LEVEL_CODE))
+                    .build();
+
             return ClientEntity
                     .builder()
                     .id(resultSet.getInt(CLIENT_ID))
@@ -188,8 +208,8 @@ public class ClientDaoImpl implements ClientDao {
                     .addressId(resultSet.getObject(ADDRESS_ID) != null ? resultSet.getInt(ADDRESS_ID) : null)
                     .regNumber(resultSet.getString(CLIENT_REG_NUMBER))
                     .vatNumber(resultSet.getObject(CLIENT_VAT_NUMBER) != null ? resultSet.getString(CLIENT_VAT_NUMBER) : null)
-                    .bankAccount(resultSet.wasNull() ? null : BankAccountEntity.builder().id(resultSet.getInt(BANK_ACCOUNT_ID)).build())
-                    .priceLevel(resultSet.wasNull() ? null : PriceLevelEntity.builder().id(resultSet.getInt(PRICE_LEVEL_ID)).build())
+                    .bankAccount(bankAccount)
+                    .priceLevel(priceLevel)
                     .build();
         } catch (SQLException e) {
             System.out.println("Can't fetch data from resultSet");

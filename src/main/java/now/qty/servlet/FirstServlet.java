@@ -1,42 +1,34 @@
 package now.qty.servlet;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import now.qty.dao.ClientDao;
-import now.qty.dao.impl.ClientDaoImpl;
-import now.qty.entity.ClientEntity;
+import now.qty.dto.ClientDto;
+import now.qty.service.impl.ClientServiceImpl;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet("/first")
+@WebServlet("/clients")
 public class FirstServlet extends HttpServlet {
 
-    private ClientDaoImpl clientDao;
+    private ClientServiceImpl clientService;
 
     @Override
     public void init() throws ServletException {
-        clientDao = ClientDaoImpl.getInstance();
+        clientService = ClientServiceImpl.getInstance();
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=utf-8");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=utf-8");
 
-        List<ClientEntity> clients = clientDao.findAll();
+        List<ClientDto> clients = clientService.findAll();
 
-        try (var writer = resp.getWriter()) {
-            writer.write("List of Clients: ");
-            for (ClientEntity client : clients) {
-                writer.write(client.toString());
-            }
-        }
+        request.setAttribute("clients", clients);
+        request.getRequestDispatcher("/WEB-INF/views/clients.jsp").forward(request, response);
     }
 
     @Override
